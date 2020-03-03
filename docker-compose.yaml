@@ -1,0 +1,8 @@
+version: '3'
+services:
+    pytorch:
+        image: 'pytorch/pytorch:latest'
+        tty: true
+        restart: always
+        volumes:
+            - ./:/workspace
