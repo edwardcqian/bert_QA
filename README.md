@@ -25,5 +25,7 @@ from model_inference import ModelInference
 
 mi = ModelInference('weights/')
 
-mi.add_
+mi.add_target_text('some paragraph of interest')
+
+mi.evaluate('some question')
 ```
