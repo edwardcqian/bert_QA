@@ -1,7 +1,7 @@
 version: '3'
 services:
     pytorch:
-        image: 'pytorch/pytorch:latest'
+        image: 'edwardcqian/huggingface_transformers_pytorch:2.5.1'
         tty: true
         restart: always
         volumes:
