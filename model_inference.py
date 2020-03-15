@@ -2,43 +2,10 @@ import numpy as np
 import torch
 
 from transformers import (
-    AlbertConfig,
-    AlbertForQuestionAnswering,
-    AlbertTokenizer,
     BertConfig,
     BertForQuestionAnswering,
     BertTokenizer,
-    CamembertConfig,
-    CamembertForQuestionAnswering,
-    CamembertTokenizer,
-    DistilBertConfig,
-    DistilBertForQuestionAnswering,
-    DistilBertTokenizer,
-    RobertaConfig,
-    RobertaForQuestionAnswering,
-    RobertaTokenizer,
-    XLMConfig,
-    XLMForQuestionAnswering,
-    XLMTokenizer,
-    XLNetConfig,
-    XLNetForQuestionAnswering,
-    XLNetTokenizer,
 )
-
-
-MODEL_CLASSES = {
-    "bert": (BertConfig, BertForQuestionAnswering, BertTokenizer),
-    "camembert": (
-        CamembertConfig, CamembertForQuestionAnswering, CamembertTokenizer
-    ),
-    "roberta": (RobertaConfig, RobertaForQuestionAnswering, RobertaTokenizer),
-    "xlnet": (XLNetConfig, XLNetForQuestionAnswering, XLNetTokenizer),
-    "xlm": (XLMConfig, XLMForQuestionAnswering, XLMTokenizer),
-    "distilbert": (
-        DistilBertConfig, DistilBertForQuestionAnswering, DistilBertTokenizer
-    ),
-    "albert": (AlbertConfig, AlbertForQuestionAnswering, AlbertTokenizer),
-}
 
 
 class ModelInference:
@@ -48,15 +15,12 @@ class ModelInference:
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() and use_gpu else 'cpu'
         )
-        config_class, model_class, tokenizer_class = MODEL_CLASSES[
-            model_type
-        ]
-        self.config = config_class.from_pretrained(model_dir)
-        self.tokenizer = tokenizer_class.from_pretrained(
+        self.config = BertConfig.from_pretrained(model_dir)
+        self.tokenizer = BertTokenizer.from_pretrained(
             model_dir, do_lower_case=do_lower,
         )
         checkpoint = model_dir
-        self.model = model_class.from_pretrained(checkpoint)
+        self.model = BertForQuestionAnswering.from_pretrained(checkpoint)
 
         self.model.to(self.device)
 
@@ -108,7 +72,7 @@ class ModelInference:
             input_data = self.tokenizer.convert_ids_to_tokens(
                 pred_data[0].detach().cpu().tolist()[0]
             )
-        answer = 'No valid answer found'
+        answer = 'No valid answers found.'
         if start_idx < end_idx:
             answer = self.tokenizer.convert_tokens_to_string(
                 input_data[start_idx:(end_idx+1)]
